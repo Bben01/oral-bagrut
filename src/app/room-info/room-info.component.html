@@ -1,0 +1,18 @@
+<div id="maindiv">
+    <div class="row" style="height: 100%;" id="middle">
+        <div class="mx-auto" style="width: 50%;">
+            <form [formGroup]="infoForm" (ngSubmit)="fillInfo()">
+                <div class="form-group">
+                    <label for="room" style="font-size: larger;">Room number</label>
+                    <input id="room" class="form-control" formControlName="room">
+                </div>
+                <div class="form-group">
+                    <label for="name" style="font-size: larger;">Name</label>
+                    <input id="name" class="form-control" formControlName="name">
+                </div>
+                <button class="btn btn-primary float-md-right" [disabled]="infoForm.invalid" type="submit">Enter
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

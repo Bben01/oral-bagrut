@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "prelevement-d6389"
+  },
+  "targets": {
+    "oral-bagrut": {
+      "hosting": {
+        "prelevement": [
+          "oral-bagrut"
+        ]
+      }
+    }
+  }
+}

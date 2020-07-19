@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="mx-auto" style="width: 65%;">
+    <h2 style="margin-top: 20px;">Join session</h2>
+    <form [formGroup]="enterForm" (ngSubmit)="enterRoom()">
+      <div class="form-group">
+        <label for="pin">PIN number</label>
+        <input type="number" id="pin" class="form-control" formControlName="pin">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" class="form-control" formControlName="password">
+      </div>
+      <button class="btn btn-primary" style="margin-bottom: 1rem;" [disabled]="enterForm.invalid" type="submit"
+        (click)="supervisor = true">Join as supervisor
+      </button>
+      <button class="btn btn-primary float-md-right" [disabled]="enterForm.invalid" type="submit">Join as examiner
+      </button>
+    </form>
+    <p class="text-danger" style="margin-top: 1em;">{{ errorMessage }}</p>
+
+    <div class="d-flex justify-content-center" *ngIf="this.entering">
+      <strong>Loading...</strong>
+      <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+    </div>
+  </div>
+</div>

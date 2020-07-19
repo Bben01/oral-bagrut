@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "oral-bagrut": {
+    "prelevement": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/oral-bagrut",
+            "outputPath": "dist/prelevement",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -28,9 +28,19 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "./node_modules/bootstrap/dist/css/bootstrap.css",
+              "src/styles.scss",
+              "./node_modules/prismjs/themes/prism-okaidia.css",
+              "./node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
+              "./node_modules/prismjs/plugins/line-highlight/prism-line-highlight.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/marked/lib/marked.js",
+              "./node_modules/prismjs/prism.js",
+              "./node_modules/prismjs/components/prism-css.min.js",
+              "./node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js",
+              "./node_modules/prismjs/plugins/line-highlight/prism-line-highlight.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -66,18 +76,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "oral-bagrut:build"
+            "browserTarget": "prelevement:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "oral-bagrut:build:production"
+              "browserTarget": "prelevement:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "oral-bagrut:build"
+            "browserTarget": "prelevement:build"
           }
         },
         "test": {
@@ -114,15 +124,20 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "oral-bagrut:serve"
+            "devServerTarget": "prelevement:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "oral-bagrut:serve:production"
+              "devServerTarget": "prelevement:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
-    }},
-  "defaultProject": "oral-bagrut"
+    }
+  },
+  "defaultProject": "prelevement"
 }

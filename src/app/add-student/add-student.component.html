@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="mx-auto" style="width: 65%;">
+        <h2 style="margin-top: 20px;">Add student</h2>
+        <form [formGroup]="addStudentForm" (ngSubmit)="addStudent()">
+            <div class="form-group">
+                <label for="name">Student name</label>
+                <input id="name" class="form-control" formControlName="name">
+            </div>
+            <button class="btn btn-primary" [disabled]="addStudentForm.invalid" type="submit">Add student
+            </button>
+        </form>
+    </div>
+    <div class="mx-auto" style="width: 85%;">
+        <app-student-table></app-student-table>
+    </div>
+</div>
