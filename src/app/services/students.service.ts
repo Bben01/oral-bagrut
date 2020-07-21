@@ -7,25 +7,44 @@ import { Injectable } from '@angular/core';
 })
 export class StudentsService {
   students: string[] = [];
+  studentsTaken: string[] = [];
   roomNumber: string;
   studentsSubject = new Subject<string[]>();
+  studentsTakenSubject = new Subject<string[]>();
   roomSubscription: Subscription;
+  dataSubcription: Subscription
 
   constructor(private room: RoomService) {
-    this.emitStudents();
     this.roomSubscription = room.roomSubject.subscribe(roomNumber => {
       this.roomNumber = roomNumber;
     });
+    this.dataSubcription = room.dataSubject.subscribe(roomData => {
+      this.students = roomData?.StudentsReady;
+      this.studentsTaken = roomData?.StudentsTaken;
+      this.emitStudents();
+
+    })
     this.room.emitRoom();
+    this.room.emitData();
   }
   
   emitStudents() {
     this.studentsSubject.next(this.students);
   }
 
+  emitTaken() {
+    this.studentsTakenSubject.next(this.studentsTaken);
+  }
+
   add(name: string) {
     this.room.addRoomStudent(name);
     this.students.push(name);
     this.emitStudents();
+    this.room.emitData();
+  }
+
+  remove(name: string) {
+    this.room.removeStudent(name);
+    this.room.emitData();
   }
 }

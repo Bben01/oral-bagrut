@@ -10,6 +10,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 export class StudentTableComponent implements OnInit, OnDestroy {
   students: string[];
   studentsSubscription: Subscription;
+  studentsTakenSubscription: Subscription;
 
   constructor(private studentsService: StudentsService) { }
 
@@ -17,6 +18,14 @@ export class StudentTableComponent implements OnInit, OnDestroy {
     this.studentsSubscription = this.studentsService.studentsSubject.subscribe(studentList => {
       this.students = studentList;
     });
+    this.studentsTakenSubscription = this.studentsService.studentsTakenSubject.subscribe(studentsTaken => {
+      if (studentsTaken) {
+        document.getElementById("body").innerHTML = studentsTaken[0] ;
+        document.getElementById("toggleButton").click();
+      }
+      
+    })
+    // 
   }
 
   ngOnDestroy() {
@@ -24,7 +33,8 @@ export class StudentTableComponent implements OnInit, OnDestroy {
   }
 
   deleteStudent(index: number) {
-    this.students.splice(index, 1);
+    let name = this.students.splice(index, 1)[0];
+    this.studentsService.remove(name);
   }
 
   swapTop(index: number) {

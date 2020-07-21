@@ -10,6 +10,7 @@ export class RoomService {
   room: string;
   roomSubject = new Subject<string>();
   roomData: firebase.firestore.DocumentData;
+  dataSubject = new Subject<firebase.firestore.DocumentData>();
 
   constructor() {
     this.emitRoom();
@@ -44,6 +45,7 @@ export class RoomService {
           this.roomData = doc.data();
           this.roomData["class"] = classroom;
           console.log("Room data =", this.roomData);
+          this.emitData();
         });
         return true;
       }).catch(error => {
@@ -60,6 +62,7 @@ export class RoomService {
           this.roomData = doc.data();
           this.roomData["class"] = classroom;
           console.log("Room data =", this.roomData);
+          this.emitData();
         });
         return true;
       }).catch(error => {
@@ -70,6 +73,10 @@ export class RoomService {
   
   emitRoom() {
     this.roomSubject.next(this.room);
+  }
+
+  emitData() {
+    this.dataSubject.next(this.roomData);
   }
 
   createRoom(room: string, password: string) {
@@ -96,11 +103,36 @@ export class RoomService {
 
   addRoomStudent(studentName: string) {
     const db = firebase.firestore();
+    this.batchStudents(studentName);
     db.collection('rooms/' + this.room + '/Classroom').doc(this.roomData['class']).update({
       StudentsReady: firebase.firestore.FieldValue.arrayUnion(studentName)
     });
-    db.collection('rooms').doc(this.room).update({
-      StudentsReady: firebase.firestore.FieldValue.arrayUnion({ name: studentName, class: this.roomData['class'] })
+  }
+
+  removeStudent(studentName: string) {
+    const db = firebase.firestore();
+    db.collection('rooms/' + this.room + '/Classroom').doc(this.roomData['class']).update({
+      StudentsReady: firebase.firestore.FieldValue.arrayRemove(studentName)
+    });
+    
+    this.batchStudents(studentName, true);
+  }
+
+  
+
+  batchStudents(name: string, remove: boolean = false) {
+    const db = firebase.firestore();
+    db.collection('rooms').doc(this.room).get().then(data => {
+      let batch = db.batch();
+      let dataSnap = data.data();
+      let length = dataSnap.Classes[this.roomData['class']];
+      length = length ? length : 0;
+      batch.update(db.collection('rooms').doc(this.room), remove ? 
+        { StudentsReady: firebase.firestore.FieldValue.arrayRemove({ class: this.roomData['class'], index: length - 1 }) } : 
+        { StudentsReady: firebase.firestore.FieldValue.arrayUnion({ class: this.roomData["class"], index: length }) });
+      dataSnap.Classes[this.roomData['class']] = length + (remove ? -1 : 1);
+      batch.set(db.collection('rooms').doc(this.room), {Classes: dataSnap.Classes}, { merge: true });
+      batch.commit();
     });
   }
 }
