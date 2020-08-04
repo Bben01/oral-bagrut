@@ -88,6 +88,7 @@ export class RoomService {
       }
       else {
         db.collection('rooms').doc(roomNumber).set({
+          Classes: {},
           StudentsReady: []
         });
         this.room = roomNumber;
