@@ -1,0 +1,27 @@
+@media (max-width: 768px) {
+    .btn {
+      font-size:22px;
+      padding:8px 12px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .btn {
+      font-size:24px;
+      padding:12px 24px;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .btn {
+      font-size:28px;
+      padding:16px 24px;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .btn {
+      padding:20px 32px;
+      font-size:36px;
+    }
+  }

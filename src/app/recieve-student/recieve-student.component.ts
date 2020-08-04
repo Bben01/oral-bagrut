@@ -1,3 +1,5 @@
+import { Router, ActivatedRoute } from '@angular/router';
+import { RoomService } from './../services/room.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,10 +8,25 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./recieve-student.component.scss']
 })
 export class RecieveStudentComponent implements OnInit {
+  error: string;
 
-  constructor() { }
+  constructor(private room: RoomService,
+    private router: Router) { }
 
   ngOnInit(): void {
+
   }
 
+  next() {
+    this.room.getStudent().then(info => {
+      this.router.navigate(["/teacher/test"], { state: { info: info } });
+    }).catch(reason => {
+      this.error = reason;
+    })
+  }
+
+  break() {
+    this.room.break();
+    this.router.navigate(["/teacher/break"]);
+  }
 }

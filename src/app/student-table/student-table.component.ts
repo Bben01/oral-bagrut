@@ -19,22 +19,25 @@ export class StudentTableComponent implements OnInit, OnDestroy {
       this.students = studentList;
     });
     this.studentsTakenSubscription = this.studentsService.studentsTakenSubject.subscribe(studentsTaken => {
-      if (studentsTaken) {
-        document.getElementById("body").innerHTML = studentsTaken[0] ;
+      if (studentsTaken?.length > 0) {
+        document.getElementById("body").innerHTML = "You can send " + studentsTaken[0]["Name"] + " to " + studentsTaken[0]["Class"];
         document.getElementById("toggleButton").click();
       }
-      
     })
-    // 
   }
 
   ngOnDestroy() {
     this.studentsSubscription.unsubscribe();
+    this.studentsTakenSubscription.unsubscribe();
   }
 
   deleteStudent(index: number) {
     let name = this.students.splice(index, 1)[0];
     this.studentsService.remove(name);
+  }
+
+  removeTaken() {
+    this.studentsService.removeTaken();
   }
 
   swapTop(index: number) {

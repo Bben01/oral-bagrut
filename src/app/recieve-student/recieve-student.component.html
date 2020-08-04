@@ -1,1 +1,16 @@
-<p>recieve-student works!</p>
+<div class="container">
+    <div class="mx-auto" style="width: 65%;">
+        <div class="col text-center">
+            <h2 style="margin-top: 20px;">Recieve</h2>
+        </div>
+        <ngb-alert [dismissible]="false" type="warning" *ngIf="error" style="margin-top: 1rem; text-align: center;">
+            {{ error }}  Try again later...
+          </ngb-alert>
+        <div class="col text-center" style="margin-top: 5rem;">
+            <button class="btn btn-light btn-lg" style="background-color: lightskyblue;" (click)="next()" >Next student</button>
+        </div>
+        <div class="col text-center" style="margin-top: 5rem;">
+            <button class="btn btn-light btn-lg" style="background-color: lightskyblue;" (click)="break()" >Take a break</button>
+        </div>
+    </div>
+</div>

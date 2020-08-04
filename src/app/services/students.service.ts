@@ -7,10 +7,10 @@ import { Injectable } from '@angular/core';
 })
 export class StudentsService {
   students: string[] = [];
-  studentsTaken: string[] = [];
+  studentsTaken: { Class: string, Name: string }[] = [];
   roomNumber: string;
   studentsSubject = new Subject<string[]>();
-  studentsTakenSubject = new Subject<string[]>();
+  studentsTakenSubject = new Subject<{ Class: string, Name: string }[]>();
   roomSubscription: Subscription;
   dataSubcription: Subscription
 
@@ -20,9 +20,13 @@ export class StudentsService {
     });
     this.dataSubcription = room.dataSubject.subscribe(roomData => {
       this.students = roomData?.StudentsReady;
+      let emit = false;
+      if (roomData?.StudentsTaken && this.studentsTaken != roomData?.StudentsTaken) {
+        emit = true;
+      }
       this.studentsTaken = roomData?.StudentsTaken;
       this.emitStudents();
-
+      emit ? this.emitTaken() : 0; // If... / else do nothing
     })
     this.room.emitRoom();
     this.room.emitData();
@@ -46,5 +50,9 @@ export class StudentsService {
   remove(name: string) {
     this.room.removeStudent(name);
     this.room.emitData();
+  }
+
+  removeTaken() {
+    this.room.removeTaken();
   }
 }
