@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="mx-auto" style="width: 65%;">
+      <h2 style="margin-top: 20px;">Log In</h2>
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="email">E-mail address</label>
+          <input type="text" id="email" class="form-control" formControlName="email" autocorrect="off" autocapitalize="off" spellcheck="false" (blur)="trimEmail()">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-control" formControlName="password">
+        </div>
+        <button class="btn btn-primary" [disabled]="signupForm.invalid" type="submit">Log in
+        </button>
+      </form>
+      <p class="text-danger" style="margin-top: 1em;">{{ errorMessage }}</p>
+    </div>
+  </div>

@@ -16,9 +16,11 @@
       <button class="btn btn-primary float-md-right" [disabled]="enterForm.invalid" type="submit">Join as examiner
       </button>
     </form>
-    <p class="text-danger" style="margin-top: 1em;">{{ errorMessage }}</p>
+    <ngb-alert [dismissible]="false" type="danger" *ngIf="errorMessage" style="margin-top: 1rem; text-align: center;">
+      {{ errorMessage }}
+    </ngb-alert>
 
-    <div class="d-flex justify-content-center" *ngIf="this.entering">
+    <div class="d-flex justify-content-center" *ngIf="this.entering && !errorMessage">
       <strong>Loading...</strong>
       <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
     </div>

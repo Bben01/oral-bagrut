@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import * as firebase from 'firebase';
 import * as crypto from 'crypto-js';
 
@@ -19,17 +19,21 @@ export class RoomService {
   enterRoom(room: string, password: string) {
     const db = firebase.firestore();
     const roomNumber = room + "#" + crypto.SHA256(password);
-    db.collection('rooms').doc(roomNumber).get().then(data => {
-      if (data.exists) {
-        this.room = roomNumber;
-        this.emitRoom();
-        console.log("Successfully entered the room", room);
-        return { succeed: true };
-      }
-      else {
-        console.log('The room is not accessible');
-        return { error: 'The room is not accessible' };
-      }
+    return new Promise((resolve, reject) => {
+      db.collection('rooms').doc(roomNumber).get().then(data => {
+        if (data.exists) {
+          this.room = roomNumber;
+          this.emitRoom();
+          console.log("Successfully entered the room", room);
+          resolve(true);
+          return;
+        }
+        else {
+          console.log('The room is not accessible');
+          reject('The room is not accessible');
+          return;
+        }
+      });
     });
   }
 
@@ -82,19 +86,35 @@ export class RoomService {
     // TODO: don't print, just returns
     const db = firebase.firestore();
     const roomNumber = room + "#" + crypto.SHA256(password);
-    db.collection('rooms').doc(roomNumber).get().then(data => {
-      if (data.exists) {
-        console.log({ error: "This room already exists!" });
-      }
-      else {
-        db.collection('rooms').doc(roomNumber).set({
-          Classes: {},
-          StudentsReady: []
-        });
-        this.room = roomNumber;
-        console.log({ message: "Room created successfully" });
-      }
+    return new Promise((resolve, reject) => {
+      db.collection('rooms').doc(roomNumber).get().then(data => {
+        if (data.exists) {
+          reject({ message: "This room already exists!" });
+          return;
+        }
+        else {
+          db.collection('rooms').doc(roomNumber).set({
+            Classes: {},
+            StudentsReady: []
+          }).then(_ => {
+            db.collection('rooms/' + roomNumber + '/Owner').doc('Owner').set({
+              uid: firebase.auth().currentUser.uid
+            }).then(_ => {
+              console.log("Ownership taken!");
+            }).catch(error => {
+              console.log("Error with ownership", error.message);
+            });
+            this.room = roomNumber;
+            resolve("Room created successfully");
+            return;
+          }).catch(error => {
+            reject(error);
+            return;
+          });
+        }
+      });
     });
+    
   }
 
   addRoomStudent(studentName: string) {

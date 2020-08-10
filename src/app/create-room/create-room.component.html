@@ -1,3 +1,4 @@
+<app-header></app-header>
 <div class="row">
   <div class="mx-auto" style="width: 65%;">
     <h2 style="margin-top: 20px;">Create a session</h2>
@@ -13,6 +14,17 @@
       <button class="btn btn-primary" [disabled]="createForm.invalid" type="submit">Create session
       </button>
     </form>
-    <p class="text-danger" style="margin-top: 1em;">{{ errorMessage }}</p>
+    <ngb-alert [dismissible]="false" type="danger" *ngIf="errorMessage" style="margin-top: 1rem; text-align: center;">
+      {{ errorMessage }}
+    </ngb-alert>
+    
+    <div *ngIf="this.creating && !errorMessage">
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status"></div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <h3>Creating session...</h3>
+      </div>
+    </div>
   </div>
 </div>

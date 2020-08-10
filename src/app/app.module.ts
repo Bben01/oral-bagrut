@@ -1,11 +1,12 @@
+import { AuthGuardService } from './services/auth-guard.service';
+import { RoomGuardService } from './services/room-guard.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AngularFireModule } from '@angular/fire';
 import { ReactiveFormsModule } from '@angular/forms'
+import { CommonModule } from '@angular/common';  
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { environment } from 'src/environments/environment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MainComponent } from './main/main.component';
 import { CreateRoomComponent } from './create-room/create-room.component';
@@ -17,6 +18,11 @@ import { BreakComponent } from './break/break.component';
 import { TestStudentComponent } from './test-student/test-student.component';
 import { StudentTableComponent } from './student-table/student-table.component';
 import { RoomAdminComponent } from './room-admin/room-admin.component';
+import { HeaderComponent } from './header/header.component';
+import { SigninComponent } from './signin/signin.component';
+import { AuthService } from './services/auth.service';
+import { RoomService } from './services/room.service';
+import { SignupComponent } from './signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -30,16 +36,20 @@ import { RoomAdminComponent } from './room-admin/room-admin.component';
     BreakComponent,
     TestStudentComponent,
     StudentTableComponent,
-    RoomAdminComponent
+    RoomAdminComponent,
+    HeaderComponent,
+    SigninComponent,
+    SignupComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    AngularFireModule.initializeApp(environment.firebase),
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CommonModule
   ],
-  providers: [],
+  providers: [AuthService, RoomService, RoomGuardService, AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -11,6 +11,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class CreateRoomComponent implements OnInit {
   createForm: FormGroup;
   errorMessage: string;
+  creating: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
     private router: Router,
@@ -24,10 +25,16 @@ export class CreateRoomComponent implements OnInit {
   }
 
   createRoom() {
+    this.creating = true;
     const pin = this.createForm.get('pin').value;
     const password = this.createForm.get('password').value;
-    this.roomService.createRoom(pin, password);
-    this.router.navigate(['/'])
+    this.roomService.createRoom(pin, password).then(message => {
+      this.creating = false;
+      this.router.navigate(['admin', 'dashboard']);
+    }).catch(error => {
+      this.creating = false;
+      this.errorMessage = error.message;
+    });
   }
 
 }

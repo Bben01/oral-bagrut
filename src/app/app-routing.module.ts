@@ -1,3 +1,6 @@
+import { AuthGuardService } from './services/auth-guard.service';
+import { SignupComponent } from './signup/signup.component';
+import { SigninComponent } from './signin/signin.component';
 import { RoomAdminComponent } from './room-admin/room-admin.component';
 import { MainComponent } from './main/main.component';
 import { RoomGuardService } from './services/room-guard.service';
@@ -15,7 +18,9 @@ import { BreakComponent } from './break/break.component';
 const routes: Routes = [
   { path: 'create', component: CreateRoomComponent },
   { path: 'join', component: EnterRoomComponent },
-  { path: 'admin/dashboard', canActivate: [RoomGuardService], component: RoomAdminComponent },
+  { path: 'signin', component: SigninComponent },
+  { path: 'signup', component: SignupComponent },
+  { path: 'admin/dashboard', canActivate: [RoomGuardService, AuthGuardService], component: RoomAdminComponent },
   { path: 'student/info', canActivate: [RoomGuardService], component: RoomInfoComponent },
   { path: 'student/add', canActivate: [RoomGuardService], component: AddStudentComponent },
   { path: 'teacher/info', canActivate: [RoomGuardService], component: RoomInfoComponent },

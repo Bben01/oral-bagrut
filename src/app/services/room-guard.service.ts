@@ -7,23 +7,39 @@ import { Observable, Subscription } from 'rxjs';
   providedIn: 'root'
 })
 export class RoomGuardService implements CanActivate {
+  inRoom: boolean = false;
+
   constructor(private router: Router, private roomService: RoomService) {
   }
 
-  canActivate(): Observable<boolean> | Promise<boolean> | boolean {
-    // TODO: remove this
-    return true;
-    return new Promise(
-      (resolve) => {
+  inRoomCheck() {
+    return new Promise(resolve => {
+      if (this.inRoom) {
+        resolve(true);
+        return;
+      }
+      else {
         this.roomService.roomSubject.subscribe((room: string) => {
           if (!!room) {
+            this.inRoom = true;
             resolve(true);
+            return;
           } else {
-            this.router.navigate(["join"]);
+            this.inRoom = false;
             resolve(false);
+            return;
           }
         });
+        this.roomService.emitRoom();
       }
-    );
+    });
+  }
+
+  canActivate(): Observable<boolean> | Promise<boolean> | boolean {
+    return new Promise(resolve => {
+      this.inRoomCheck().then((access: boolean) => {
+        resolve(access);
+      });
+    });
   }
 }

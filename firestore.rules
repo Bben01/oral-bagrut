@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{documents=**} {
+    	allow list: if false;
+    	allow update;
+    	allow read;
+    }
+    
+    match /rooms/{id} {
+    	allow create: if id.matches("^(\\d){6,}#[a-zA-Z0-9]{65,}$") &&
+      								 request.resource.data.size() == 2 &&
+      								 request.resource.data.Classes is map &&
+                       request.resource.data.StudentsReady is list;
+    }
+    
+    match /rooms/{roomID}/Classroom/{classID} {
+    	allow create: if request.resource.data.size() == 3 &&
+      								 request.resource.data.StudentsReady is list &&
+      								 request.resource.data.StudentsTaken is list &&
+                       request.resource.data.currentTeacher is string;
+    }
+    
+    match /rooms/{roomID}/Examiner/{examinerName} {
+    	allow create: if request.resource.data.size() == 3 &&
+      								 request.resource.data.Classroom is string &&
+      								 request.resource.data.Student is map &&
+                       request.resource.data.isResting is bool;
+    }
+  }
+}

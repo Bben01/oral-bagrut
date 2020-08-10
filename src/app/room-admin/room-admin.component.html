@@ -1,1 +1,13 @@
-<p>room-admin works!</p>
+<div class="mx-auto" style="width: 85%;">
+    <h1 style="margin-top: 20px;">Active classrooms</h1>
+    <div class="card-deck">
+        <div class="card mb-3" style="min-width: 18em; max-width: 18em;"
+            *ngFor="let classe of classrooms; let i = index">
+            <div class="card-body">
+                <h3 class="card-title" style="white-space: nowrap;">{{ "Room " + classe.class }}</h3>
+                <p style="white-space: nowrap;"> {{ classe.studentsWaiting }} students waiting</p>
+                <p style="white-space: nowrap;"> {{ classe.studentsFinished }} students finished</p>
+            </div>
+        </div>
+    </div>
+</div>

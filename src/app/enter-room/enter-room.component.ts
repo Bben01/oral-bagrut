@@ -29,15 +29,17 @@ export class EnterRoomComponent implements OnInit {
   enterRoom() {
     const pin = this.enterForm.get('pin').value;
     const password = this.enterForm.get('password').value;
-    this.roomService.enterRoom(pin, password);
     this.entering = true;
-    if (this.supervisor) {
-      this.router.navigate(['student', 'info']);
-    }
-    else {
-      this.router.navigate(['teacher', 'info']);
-    }
-    
+    this.roomService.enterRoom(pin, password).then(success => {
+      if (this.supervisor) {
+        this.router.navigate(['student', 'info']);
+      }
+      else {
+        this.router.navigate(['teacher', 'info']);
+      }
+    }).catch(error => {
+      this.errorMessage = error;
+    });
   }
 
 }
