@@ -1,31 +1,61 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{documents=**} {
+    match /{document=**} {
     	allow list: if false;
-    	allow update;
-    	allow read;
+      allow read;
     }
     
-    match /rooms/{id} {
-    	allow create: if id.matches("^(\\d){6,}#[a-zA-Z0-9]{65,}$") &&
-      								 request.resource.data.size() == 2 &&
-      								 request.resource.data.Classes is map &&
-                       request.resource.data.StudentsReady is list;
+    
+    function getOwnerID(roomID) {
+    	let owner = get(/databases/$(database)/documents/rooms/$(roomID)/Owner/Owner);
+      return owner == null ? null : owner.data.uid ;
+    }
+    
+    match /rooms/{roomID} {
+    	function checkData() {
+      	return request.auth != null &&
+							 request.resource.data.size() == 2 &&
+      				 request.resource.data.Classes is map &&
+               request.resource.data.StudentsReady is list;
+      }
+      allow create: if roomID.matches("^(\\d){6,}#[a-zA-Z0-9]{64,}$") &&
+      								 checkData();
+      allow update: if checkData();
+			allow delete: if request.auth != null && 
+    		request.auth.uid == getOwnerID(roomID);
     }
     
     match /rooms/{roomID}/Classroom/{classID} {
-    	allow create: if request.resource.data.size() == 3 &&
-      								 request.resource.data.StudentsReady is list &&
-      								 request.resource.data.StudentsTaken is list &&
-                       request.resource.data.currentTeacher is string;
+    	function checkData() {
+      	return request.resource.data.size() == 3 &&
+      				 request.resource.data.StudentsReady is list &&
+      				 request.resource.data.StudentsTaken is list &&
+               request.resource.data.currentTeacher is string;
+      }
+      allow update, create: if checkData();
     }
     
     match /rooms/{roomID}/Examiner/{examinerName} {
-    	allow create: if request.resource.data.size() == 3 &&
-      								 request.resource.data.Classroom is string &&
-      								 request.resource.data.Student is map &&
-                       request.resource.data.isResting is bool;
+    	function checkData() {
+      	return request.resource.data.size() == 3 &&
+      				 request.resource.data.Classroom is string &&
+      				 request.resource.data.Student is map &&
+               request.resource.data.isResting is bool;
+      }
+      allow update, create: if checkData();
+    }
+    
+    match /rooms/{roomID}/Owner/{ownerID} {
+      allow read: if request.auth != null && 
+      							 request.auth.uid == getOwnerID(roomID);
+      allow create: if getOwnerID(roomID) == null;
+      allow update: if false;
+    }
+    
+    match /{document=**} {
+    	allow write: if false;
     }
   }
 }
