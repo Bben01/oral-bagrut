@@ -12,6 +12,7 @@ export class RoomAdminComponent implements OnInit, OnDestroy {
 
   classrooms: { class: string, studentsWaiting: number, studentsFinished: number }[];
   classSubscription: Subscription;
+  status: {succes: boolean, message: string};
 
   constructor(private router: Router, private adminService: AdminService) { }
 
@@ -22,6 +23,12 @@ export class RoomAdminComponent implements OnInit, OnDestroy {
       }
     );
     this.adminService.emitClassrooms();
+  }
+
+  deleteRoom() {
+    this.adminService.deleteRoom().then((status: { succes: boolean, message: string }) => {
+      this.status = status;
+    });
   }
 
   ngOnDestroy() {

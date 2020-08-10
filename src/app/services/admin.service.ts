@@ -39,4 +39,15 @@ export class AdminService {
     this.classroomsSubject.next(this.classrooms);
   }
 
+  deleteRoom() {
+    const db = firebase.firestore();
+    return new Promise(resolve => {
+      db.collection('rooms').doc(this.room).delete().then(_ => {
+        resolve({ succes: true, message: "The room was succesfully deleted." });
+      }).catch(error => {
+        console.log(error);
+        resolve({ succes: false, message: error.message });
+      });
+    });
+  }
 }

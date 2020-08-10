@@ -83,7 +83,6 @@ export class RoomService {
   }
 
   createRoom(room: string, password: string) {
-    // TODO: don't print, just returns
     const db = firebase.firestore();
     const roomNumber = room + "#" + crypto.SHA256(password);
     return new Promise((resolve, reject) => {
@@ -102,7 +101,7 @@ export class RoomService {
             }).then(_ => {
               console.log("Ownership taken!");
             }).catch(error => {
-              console.log("Error with ownership", error.message);
+              console.log("Error with ownership ", error.message);
             });
             this.room = roomNumber;
             resolve("Room created successfully");
@@ -182,7 +181,7 @@ export class RoomService {
             }
             else {
               // TODO: watch for next student (in case there is no one available now)
-              reject("Unable to find a ready student.");
+              reject("Unable to find a student.");
               return;
             }
           })
