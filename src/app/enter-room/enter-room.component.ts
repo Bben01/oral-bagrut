@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RoomService } from '../services/room.service';
 
@@ -40,6 +40,26 @@ export class EnterRoomComponent implements OnInit {
     }).catch(error => {
       this.errorMessage = error;
     });
+  }
+
+  getValidStatus(id: string) {
+    if (this.enterForm.get(id).touched) {
+      return (this.enterForm.get(id).valid) ? "is-valid" : "is-invalid";
+    }
+    return "";
+  }
+
+  getFormValidationErrors(id: string) {
+    const controlErrors: ValidationErrors = this.enterForm.get(id).errors;
+    if (!controlErrors) {
+      return "";
+    }
+    if (controlErrors['required']) {
+      return "This field is required"
+    }
+    if (controlErrors['pattern']) {
+      return id == "pin" ? "PIN must be 6 numbers" : "The password must contain at least 6 characters";
+    }
   }
 
 }

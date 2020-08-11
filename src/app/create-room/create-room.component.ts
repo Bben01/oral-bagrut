@@ -1,7 +1,7 @@
 import { RoomService } from './../services/room.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
 import * as firebase from 'firebase/app';
 
 @Component({
@@ -39,6 +39,26 @@ export class CreateRoomComponent implements OnInit {
         this.errorMessage = "You have to log in before creating a session."
       }
     });
+  }
+
+  getValidStatus(id: string) {
+    if (this.createForm.get(id).touched) {
+      return (this.createForm.get(id).valid) ? "is-valid" : "is-invalid";
+    }
+    return "";
+  }
+
+  getFormValidationErrors(id: string) {
+    const controlErrors: ValidationErrors = this.createForm.get(id).errors;
+    if (!controlErrors) {
+      return "";
+    }
+    if (controlErrors['required']) {
+      return "This field is required"
+    }
+    if (controlErrors['pattern']) {
+      return id == "pin" ? "PIN must be 6 numbers" : "The password must contain at least 6 characters";
+    }
   }
 
 }
