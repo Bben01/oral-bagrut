@@ -2,6 +2,7 @@ import { RoomService } from './../services/room.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import * as firebase from 'firebase/app';
 
 @Component({
   selector: 'app-create-room',
@@ -34,6 +35,9 @@ export class CreateRoomComponent implements OnInit {
     }).catch(error => {
       this.creating = false;
       this.errorMessage = error.message;
+      if (firebase.auth().currentUser == null) {
+        this.errorMessage = "You have to log in before creating a session."
+      }
     });
   }
 
