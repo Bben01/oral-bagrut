@@ -38,6 +38,13 @@ export class CreateRoomComponent implements OnInit {
       if (firebase.auth().currentUser == null) {
         this.errorMessage = "You have to log in before creating a session."
       }
+      if (error.message == "This room already exists!") {
+        this.roomService.enterRoom(pin, password).then(_ => {
+          this.router.navigate(['admin', 'dashboard']);
+        }).catch(error => {
+          console.log(error);
+        });
+      }
     });
   }
 

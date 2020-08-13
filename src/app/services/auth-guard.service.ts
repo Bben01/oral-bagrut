@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
 
-  constructor(private router: Router) { }
+  constructor() { }
 
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
     return new Promise(resolve => {
@@ -15,7 +15,6 @@ export class AuthGuardService implements CanActivate {
           if (user) {
             resolve(true);
           } else {
-            this.router.navigate(['signin']);
             resolve(false);
           }
         });

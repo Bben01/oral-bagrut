@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BreakComponent } from './break.component';
+import { EnterLinkComponent } from './enter-link.component';
 
-describe('BreakComponent', () => {
-  let component: BreakComponent;
-  let fixture: ComponentFixture<BreakComponent>;
+describe('EnterLinkComponent', () => {
+  let component: EnterLinkComponent;
+  let fixture: ComponentFixture<EnterLinkComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BreakComponent ]
+      declarations: [ EnterLinkComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BreakComponent);
+    fixture = TestBed.createComponent(EnterLinkComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

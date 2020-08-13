@@ -9,10 +9,22 @@
                 <p style="white-space: nowrap;"> {{ classe.studentsFinished }} students finished</p>
             </div>
         </div>
-        
+
     </div>
- 
-    <h3 style="text-align: center;" *ngIf="!classrooms || classrooms.length == 0">No active classrooms for the moment</h3>
+
+    <ngb-alert [dismissible]="false" type="info" *ngIf="!classrooms || classrooms.length == 0"
+        style="margin-top: 1rem; text-align: center;">
+        No active classrooms for the moment
+    </ngb-alert>
+
+    <hr>
+    <div style="text-align: center;">
+        <share-buttons [theme]="'circles-dark'" [include]="['whatsapp','sms','email','copy']" [show]="4"
+            [showText]="true" [size]="4" [url]="getShareUrl()" [autoSetMeta]="true">
+        </share-buttons>
+    </div>
+
+    <hr>
 
     <ngb-alert [dismissible]="false" [type]="status.succes ? 'success' : 'danger'" *ngIf="status"
         style="margin-top: 1rem; text-align: center;">
@@ -20,18 +32,17 @@
     </ngb-alert>
 
     <div style="text-align: center;">
-        <button type="button" id="toggleButton" class="btn btn-danger" data-toggle="modal" data-target="#modal" *ngIf="!status?.succes">
+        <button type="button" id="toggleButton" class="btn btn-danger" data-toggle="modal" data-target="#modal"
+            *ngIf="!status?.succes">
             End test
         </button>
         <button routerLink="/" class="btn btn-info" *ngIf="status?.succes">
             Home
         </button>
-
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -41,7 +52,7 @@
                     </button>
                 </div>
                 <div class="modal-body" id="body">
-                    Do you really want to end the test? 
+                    Do you really want to end the test?
                     <br>
                     This action can't be cancelled.
                 </div>

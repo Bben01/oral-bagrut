@@ -34,4 +34,8 @@ export class RoomAdminComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.classSubscription.unsubscribe();
   }
+
+  getShareUrl() {
+    return this.adminService.createShareUrl();
+  }
 }

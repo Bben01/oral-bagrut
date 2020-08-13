@@ -34,7 +34,7 @@ export class RoomInfoComponent implements OnInit {
     const examiner = !!document.URL.match(/teacher/);
     this.roomService.saveInfos(name, room, examiner);
 
-    this.router.navigate([examiner ? "../recieve" : "../add"], {relativeTo: this.activatedRoute});
+    this.router.navigate([examiner ? "../recieve" : "../add"], { relativeTo: this.activatedRoute });
   }
 
 }

@@ -24,9 +24,4 @@ export class RecieveStudentComponent implements OnInit {
       this.error = reason;
     })
   }
-
-  break() {
-    this.room.break();
-    this.router.navigate(["/teacher/break"]);
-  }
 }

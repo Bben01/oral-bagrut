@@ -1,12 +1,13 @@
+import { CanActivate } from '@angular/router';
 import { RoomService } from './room.service';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AdminService {
+export class AdminService implements CanActivate {
   room: string;
   classrooms: { class: string, studentsWaiting: number, studentsFinished: number }[];
   classroomsSubject = new Subject<{ class: string, studentsWaiting: number, studentsFinished: number }[]>();
@@ -47,6 +48,26 @@ export class AdminService {
       }).catch(error => {
         console.log(error);
         resolve({ succes: false, message: error.message });
+      });
+    });
+  }
+
+  createShareUrl() {
+    return "https://www.oral-bagrut.web.app/join/" + this.room;
+  }
+
+  canActivate(): Observable<boolean> | Promise<boolean> | boolean {
+    const db = firebase.firestore();
+    return new Promise(resolve => {
+      if (!this.room) {
+        resolve(false);
+        return;
+      }
+      db.collection('rooms/' + this.room + "/Owner").doc("Owner").onSnapshot(data => {
+        resolve(data.data().uid == firebase.auth().currentUser.uid);
+      }, error => {
+        console.log(error.message);
+        resolve(false);
       });
     });
   }

@@ -30,7 +30,7 @@ export class EnterRoomComponent implements OnInit {
     const pin = this.enterForm.get('pin').value;
     const password = this.enterForm.get('password').value;
     this.entering = true;
-    this.roomService.enterRoom(pin, password).then(success => {
+    this.roomService.enterRoom(pin, password).then(_ => {
       if (this.supervisor) {
         this.router.navigate(['student', 'info']);
       }

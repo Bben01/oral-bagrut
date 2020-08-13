@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import * as firebase from 'firebase';
 import * as crypto from 'crypto-js';
 
@@ -16,9 +16,9 @@ export class RoomService {
     this.emitRoom();
   }
 
-  enterRoom(room: string, password: string) {
+  enterRoom(room: string, password: string, roomNumber: string = null) {
     const db = firebase.firestore();
-    const roomNumber = room + "#" + crypto.SHA256(password);
+    roomNumber = roomNumber ? roomNumber : room + "#" + crypto.SHA256(password);
     return new Promise((resolve, reject) => {
       db.collection('rooms').doc(roomNumber).get().then(data => {
         if (data.exists) {
@@ -26,12 +26,10 @@ export class RoomService {
           this.emitRoom();
           console.log("Successfully entered the room", room);
           resolve(true);
-          return;
         }
         else {
           console.log('The room is not accessible');
           reject('The room is not accessible');
-          return;
         }
       });
     });
@@ -42,8 +40,7 @@ export class RoomService {
     if (isExaminer) {
       db.collection('rooms/' + this.room + '/Examiner').doc(name).set({
         Classroom: classroom,
-        Student: {},
-        isResting: false
+        Student: {}
       }, { merge: true }).then(_ => {
         db.collection('rooms/' + this.room + '/Examiner').doc(name).onSnapshot(doc => {
           this.roomData = doc.data();
@@ -113,7 +110,6 @@ export class RoomService {
         }
       });
     });
-    
   }
 
   addRoomStudent(studentName: string) {
@@ -189,22 +185,11 @@ export class RoomService {
       })
     });
   }
-  
-  break(resting: boolean = true) {
-    const db = firebase.firestore();
-    db.collection('rooms/' + this.room + '/Examiner').doc(this.roomData["name"]).update({
-      isResting: resting
-    });
-  }
 
   endTest() {
     const db = firebase.firestore();
     db.collection('rooms/' + this.room + '/Examiner').doc(this.roomData["name"]).update({
       Student: {}
     });
-  }
-
-  endBreak() {
-    this.break(false);
   }
 }
