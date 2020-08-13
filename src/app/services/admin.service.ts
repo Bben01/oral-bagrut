@@ -53,7 +53,7 @@ export class AdminService implements CanActivate {
   }
 
   createShareUrl() {
-    return "https://www.oral-bagrut.web.app/join/" + this.room;
+    return "https://oral-bagrut.web.app/join/" + this.room;
   }
 
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
