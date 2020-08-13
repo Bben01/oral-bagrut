@@ -38,11 +38,11 @@ export class RoomService {
   saveInfos(name: string, classroom: string, isExaminer: boolean) {
     const db = firebase.firestore();
     if (isExaminer) {
-      db.collection('rooms/' + this.room + '/Examiner').doc(name).set({
-        Classroom: classroom,
+      db.collection('rooms/' + this.room + '/Examiner').doc(classroom).set({
+        Name: name,
         Student: {}
       }, { merge: true }).then(_ => {
-        db.collection('rooms/' + this.room + '/Examiner').doc(name).onSnapshot(doc => {
+        db.collection('rooms/' + this.room + '/Examiner').doc(classroom).onSnapshot(doc => {
           this.roomData = doc.data();
           this.roomData["class"] = classroom;
           this.roomData["name"] = name;
@@ -146,9 +146,9 @@ export class RoomService {
       let length = dataSnap.Classes[classe];
       length = length ? length : { start: 0, stop: 0 };
       batch.update(db.collection('rooms').doc(this.room), remove ?
-        { StudentsReady: firebase.firestore.FieldValue.arrayRemove({ class: classe, index: take ? length.start : length.stop }) } :
+        { StudentsReady: firebase.firestore.FieldValue.arrayRemove({ class: classe, index: take ? length.start + 1 : length.stop }) } :
         { StudentsReady: firebase.firestore.FieldValue.arrayUnion({ class: classe, index: length.stop + 1 }) });
-      dataSnap.Classes[classe] = {start: take ? length.start + 1 : length.start, stop: length.stop + (remove ? -1 : 1) + (take ? 1 : 0)} ;
+      dataSnap.Classes[classe] = { start: take ? length.start + 1 : length.start, stop: length.stop + (remove ? -1 : 1) + (take ? 1 : 0) };
       batch.set(db.collection('rooms').doc(this.room), { Classes: dataSnap.Classes }, { merge: true });
       batch.commit();
     });
@@ -169,7 +169,7 @@ export class RoomService {
             name = nameData["StudentsReady"].length > 0 ? nameData["StudentsReady"][0] : undefined;
             if (name) {
               this.removeStudent(name, classe, this.roomData['class']);
-              db.collection('rooms/' + this.room + '/Examiner').doc(this.roomData["name"]).update({
+              db.collection('rooms/' + this.room + '/Examiner').doc(this.roomData["class"]).update({
                 Student: { Class: classe, Name: name }
               });
               resolve({ name: name, classe: classe });
@@ -188,7 +188,7 @@ export class RoomService {
 
   endTest() {
     const db = firebase.firestore();
-    db.collection('rooms/' + this.room + '/Examiner').doc(this.roomData["name"]).update({
+    db.collection('rooms/' + this.room + '/Examiner').doc(this.roomData["class"]).update({
       Student: {}
     });
   }

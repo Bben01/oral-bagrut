@@ -2,7 +2,6 @@ import { RoomService } from './../services/room.service';
 import { Router, CanActivate, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { relative } from 'path';
 
 @Component({
   selector: 'app-room-info',
