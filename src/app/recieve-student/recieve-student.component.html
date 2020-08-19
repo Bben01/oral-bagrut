@@ -3,11 +3,11 @@
         <div class="col text-center">
             <h2 style="margin-top: 20px;">Recieve</h2>
         </div>
-        <ngb-alert [dismissible]="false" type="warning" *ngIf="error" style="margin-top: 1rem; text-align: center;">
-            {{ error }}  Try again later...
+        <ngb-alert [dismissible]="false" type="info" *ngIf="error" style="margin-top: 1rem; text-align: center;">
+            {{ error }}
           </ngb-alert>
         <div class="col text-center" style="margin-top: 5rem;">
-            <button class="btn btn-light btn-lg" style="background-color: lightskyblue;" (click)="next()" >Next student</button>
+            <button class="btn btn-light btn-lg" style="background-color: lightskyblue;" (click)="next()">Next student</button>
         </div>
     </div>
 </div>

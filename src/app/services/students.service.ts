@@ -20,14 +20,10 @@ export class StudentsService {
     });
     this.dataSubcription = room.dataSubject.subscribe(roomData => {
       this.students = roomData?.StudentsReady;
-      let emit = false;
-      if (roomData?.StudentsTaken && this.studentsTaken != roomData?.StudentsTaken) {
-        emit = true;
-      }
       this.studentsTaken = roomData?.StudentsTaken;
       this.emitStudents();
-      emit ? this.emitTaken() : 0; // If... / else do nothing
-    })
+      this.emitTaken();
+    });
     this.room.emitRoom();
     this.room.emitData();
   }

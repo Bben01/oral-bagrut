@@ -20,7 +20,7 @@ export class CreateRoomComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm = this.formBuilder.group({
-      pin: ['', [Validators.required, Validators.pattern(/^\d{6,}$/)]],
+      pin: ['', [Validators.required, Validators.pattern(/^\d{6,6}$/)]],
       password: ['', [Validators.required, Validators.pattern(/[0-9a-zA-Z]{6,}/)]]
     })
   }

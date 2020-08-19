@@ -9,8 +9,13 @@ import * as crypto from 'crypto-js';
 export class RoomService {
   room: string;
   roomSubject = new Subject<string>();
-  roomData: firebase.firestore.DocumentData;
+  roomData: firebase.firestore.DocumentData = {};
   dataSubject = new Subject<firebase.firestore.DocumentData>();
+
+  // Students Listener
+  studentListener: () => void;
+  studentReady: { name: string, classe: string };
+  studentReadySubject = new Subject<{ name: string, classe: string }>();
 
   constructor() {
     this.emitRoom();
@@ -46,11 +51,10 @@ export class RoomService {
           this.roomData = doc.data();
           this.roomData["class"] = classroom;
           this.roomData["name"] = name;
-          console.log("Room data =", this.roomData);
           this.emitData();
         });
-      }).catch(_ => {
-
+      }).catch(error => {
+        console.log(error.message);
       });
     }
     else {
@@ -61,12 +65,11 @@ export class RoomService {
       }, { merge: true }).then(_ => {
         db.collection('rooms/' + this.room + '/Classroom').doc(classroom).onSnapshot(doc => {
           this.roomData = doc.data();
-          this.roomData["class"] = classroom;
-          console.log("Room data =", this.roomData);
+          this.roomData.class = classroom;
           this.emitData();
         });
-      }).catch(_ => {
-
+      }).catch(error => {
+        console.log(error.message);
       });
     }
   }
@@ -127,18 +130,19 @@ export class RoomService {
       StudentsTaken: examinerClasse ? firebase.firestore.FieldValue.arrayUnion({ Name: studentName, Class: examinerClasse }) : firebase.firestore.FieldValue.arrayRemove("")
     });
 
-    this.batchStudents(true, studentClass, !!examinerClasse);
+    if (!examinerClasse) {
+      this.batchStudents(true, studentClass);
+    }
   }
 
   removeTaken() {
     const db = firebase.firestore();
-    console.log("Removing", this.roomData?.StudentsTaken[0]);
     db.collection('rooms/' + this.room + '/Classroom').doc(this.roomData['class']).update({
       StudentsTaken: firebase.firestore.FieldValue.arrayRemove(this.roomData?.StudentsTaken[0])
     });
   }
 
-  batchStudents(remove: boolean = false, classe: string = this.roomData['class'], take: boolean = false) {
+  batchStudents(remove: boolean = false, classe: string = this.roomData['class']) {
     const db = firebase.firestore();
     db.collection('rooms').doc(this.room).get().then(data => {
       let batch = db.batch();
@@ -146,9 +150,9 @@ export class RoomService {
       let length = dataSnap.Classes[classe];
       length = length ? length : { start: 0, stop: 0 };
       batch.update(db.collection('rooms').doc(this.room), remove ?
-        { StudentsReady: firebase.firestore.FieldValue.arrayRemove({ class: classe, index: take ? length.start + 1 : length.stop }) } :
+        { StudentsReady: firebase.firestore.FieldValue.arrayRemove({ class: classe, index: length.stop }) } :
         { StudentsReady: firebase.firestore.FieldValue.arrayUnion({ class: classe, index: length.stop + 1 }) });
-      dataSnap.Classes[classe] = { start: take ? length.start + 1 : length.start, stop: length.stop + (remove ? -1 : 1) + (take ? 1 : 0) };
+      dataSnap.Classes[classe] = { start: length.start, stop: length.stop + (remove ? -1 : 1) };
       batch.set(db.collection('rooms').doc(this.room), { Classes: dataSnap.Classes }, { merge: true });
       batch.commit();
     });
@@ -158,31 +162,57 @@ export class RoomService {
     const db = firebase.firestore();
     let name: string;
     let classe: string;
+
+    const roomRef = db.collection('rooms').doc(this.room);
     return new Promise((resolve, reject) => {
-      db.collection('rooms').doc(this.room).get().then(data => {
-        let dataStudents = data.data();
-        let student = dataStudents.StudentsReady[0];
+      db.runTransaction(async (transaction: firebase.firestore.Transaction) => {
+        const data = await transaction.get(roomRef);
+        let studentsReady = data.data().StudentsReady;
+        let student = studentsReady?.shift();
         if (!!student) {
           classe = student["class"];
-          db.collection('rooms/' + this.room + '/Classroom').doc(classe).get().then(dataStudentsClass => {
-            let nameData = dataStudentsClass.data();
-            name = nameData["StudentsReady"].length > 0 ? nameData["StudentsReady"][0] : undefined;
-            if (name) {
-              this.removeStudent(name, classe, this.roomData['class']);
-              db.collection('rooms/' + this.room + '/Examiner').doc(this.roomData["class"]).update({
-                Student: { Class: classe, Name: name }
-              });
-              resolve({ name: name, classe: classe });
-              return;
-            }
-            else {
-              // TODO: watch for next student (in case there is no one available now)
-              reject("Unable to find a student.");
-              return;
-            }
-          })
+          const startStop = data.data().Classes;
+          startStop[classe]["start"] += 1;
+          transaction.update(roomRef, {
+            StudentsReady: studentsReady,
+            Classes: startStop
+          });
         }
-      })
+        else {
+          throw new Error("Failing transaction");
+        }
+      }).then(_ => {
+        // Get the student
+        db.collection('rooms/' + this.room + '/Classroom').doc(classe).get().then(dataStudentsClass => {
+          name = dataStudentsClass.data()["StudentsReady"].length > 0 ? dataStudentsClass.data()["StudentsReady"][0] : undefined;
+          if (name) {
+            this.removeStudent(name, classe, this.roomData['class']);
+            db.collection('rooms/' + this.room + '/Examiner').doc(this.roomData["class"]).update({
+              Student: { Class: classe, Name: name }
+            });
+            resolve({ name: name, classe: classe });
+          }
+          else {
+            this.setStudentListener();
+            reject("Unable to find a student.");
+          }
+        });
+      }).catch(error => {
+        // Set a listener on the student queue
+        console.log(error.message);
+        this.setStudentListener();
+        reject("No students ready at the moment, a student will be sent as soon as there is one available.");
+      });
+    });
+  }
+
+  setStudentListener() {
+    const db = firebase.firestore();
+    this.studentListener = db.collection('rooms').doc(this.room).onSnapshot(data => {
+      if (data.data().StudentsReady?.length > 0) {
+        this.studentListener();
+        this.getStudent();
+      }
     });
   }
 

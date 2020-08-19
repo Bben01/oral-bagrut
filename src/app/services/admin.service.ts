@@ -24,7 +24,6 @@ export class AdminService implements CanActivate {
           if (dataClassrooms?.Classes && Object.keys(dataClassrooms.Classes).length > 0) {
             for (const classroom of Object.keys(dataClassrooms.Classes)) {
               // This for is only to get the class name
-              console.log(classroom);
               let info = dataClassrooms.Classes[classroom];
               this.classrooms.push({ class: classroom, studentsWaiting: info.stop - info.start, studentsFinished: info.start });
             }

@@ -1,6 +1,19 @@
 import { StudentsService } from './../services/students.service';
 import { Subscription } from 'rxjs';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+
+
+@Component({
+  selector: 'ngbd-modal',
+  templateUrl: './modal.component.html'
+})
+export class NgbdModal {
+  @Input() text: string;
+
+  constructor(public modal: NgbActiveModal) { }
+
+}
 
 @Component({
   selector: 'app-student-table',
@@ -9,21 +22,20 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 })
 export class StudentTableComponent implements OnInit, OnDestroy {
   students: string[];
+  studentsTaken: { Class: string; Name: string; }[];
   studentsSubscription: Subscription;
   studentsTakenSubscription: Subscription;
 
-  constructor(private studentsService: StudentsService) { }
+  constructor(private studentsService: StudentsService, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.studentsSubscription = this.studentsService.studentsSubject.subscribe(studentList => {
       this.students = studentList;
     });
     this.studentsTakenSubscription = this.studentsService.studentsTakenSubject.subscribe(studentsTaken => {
-      if (studentsTaken?.length > 0) {
-        document.getElementById("body").innerHTML = "You can send " + studentsTaken[0]["Name"] + " to " + studentsTaken[0]["Class"];
-        document.getElementById("toggleButton").click();
-      }
-    })
+      this.studentsTaken = studentsTaken;
+      this.toggleTaken();
+    });
   }
 
   ngOnDestroy() {
@@ -48,4 +60,19 @@ export class StudentTableComponent implements OnInit, OnDestroy {
     [this.students[index + 1], this.students[index]] = [this.students[index], this.students[index + 1]];
   }
 
+  toggleTaken() {
+    if (this.studentsTaken.length > 0 && !this.modalService.hasOpenModals()) {
+      const currentStudent = this.studentsTaken[0];
+      setTimeout((_: any) => {
+        const modalRef = this.modalService.open(NgbdModal, { centered: true });
+        modalRef.componentInstance.text = "You can send " + currentStudent.Name + " to " + currentStudent.Class;
+        modalRef.result.then(_ => {
+          this.toggleTaken();
+        }).catch(_ => {
+          this.toggleTaken();
+        });
+      }, 500);
+      this.removeTaken();
+    }
+  }
 }
