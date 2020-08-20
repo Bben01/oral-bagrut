@@ -54,10 +54,12 @@ export class StudentTableComponent implements OnInit, OnDestroy {
 
   swapTop(index: number) {
     [this.students[index - 1], this.students[index]] = [this.students[index], this.students[index - 1]];
+    this.studentsService.synchonise();
   }
 
   swapBot(index: number) {
     [this.students[index + 1], this.students[index]] = [this.students[index], this.students[index + 1]];
+    this.studentsService.synchonise();
   }
 
   toggleTaken() {

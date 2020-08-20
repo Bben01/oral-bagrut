@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, merge } from 'rxjs';
 import * as firebase from 'firebase';
 import * as crypto from 'crypto-js';
 
@@ -220,6 +220,12 @@ export class RoomService {
     const db = firebase.firestore();
     db.collection('rooms/' + this.room + '/Examiner').doc(this.roomData["class"]).update({
       Student: {}
+    });
+  }
+
+  refresh(students: string[]) {
+    firebase.firestore().collection('rooms/' + this.room + '/Classroom').doc(this.roomData["class"]).update({
+      StudentsReady: students
     });
   }
 }

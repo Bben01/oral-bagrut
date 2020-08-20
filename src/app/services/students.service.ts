@@ -51,4 +51,8 @@ export class StudentsService {
   removeTaken() {
     this.room.removeTaken();
   }
+
+  synchonise() {
+    this.room.refresh(this.students);
+  }
 }
