@@ -23,6 +23,8 @@ You can delete the session after the test.
 
 If you disconnect from the webpage, you can access it with the ```create test``` button and by entering the PIN and the password again.
 
+![Admin image](images/Admin.png)
+
 ### For the Supervisor
 
 The Supervisor is someone watching over the classroom during the examination. When they arrive there, they have to enter the session the admin created using the PIN and the password, or with the link provided. Then they have to give information about the classroom they are in and their name. During the test, when a student is available for oral testing, the Supervisor enters their name in the webpage. He will get a notification when he has to send a student with the name of the Examinator and his room.
