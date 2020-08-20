@@ -48,6 +48,3 @@ If you want to base you own website on this one, you can:
 - Use your token in ```/src/environments/environment.ts```
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.7.
-
-
-
