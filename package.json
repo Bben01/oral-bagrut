@@ -1,6 +1,6 @@
 {
   "name": "oral-bagrut",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -17,7 +17,6 @@
     "@angular/common": "~9.1.9",
     "@angular/compiler": "~9.1.9",
     "@angular/core": "~9.1.9",
-    "@angular/fire": "^6.0.0-rc.2",
     "@angular/forms": "~9.1.9",
     "@angular/localize": "~9.1.9",
     "@angular/platform-browser": "~9.1.9",
@@ -34,7 +33,6 @@
     "bootstrap": "^4.5.0",
     "crypto-js": "^4.0.0",
     "firebase": "^7.14.5",
-    "firebase-tools": "^8.4.2",
     "httpclient": "^0.1.0",
     "jquery": "^3.5.1",
     "ngx-cookie": "^4.1.2",
@@ -47,7 +45,7 @@
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.900",
-    "@angular-devkit/build-angular": "~0.901.7",
+    "@angular-devkit/build-angular": "^0.1000.6",
     "@angular/cli": "~9.1.7",
     "@angular/compiler-cli": "~9.1.9",
     "@types/crypto-js": "^3.1.47",
@@ -56,7 +54,7 @@
     "@types/node": "^12.12.47",
     "@types/uuid": "^8.0.0",
     "codelyzer": "^5.1.2",
-    "firebase-tools": "^7.12.1",
+    "firebase-tools": "^8.7.0",
     "fuzzy": "^0.1.3",
     "inquirer": "^6.2.2",
     "inquirer-autocomplete-prompt": "^1.0.1",
