@@ -2,14 +2,11 @@
 
 A website made to ease student distribution to the teachers during oral tests.
 
-### The problem 
+### Introduction
 
-In a normal situation, students start their tests in a classroom and let the room supervisor know when they are ready to pass their tests. The examiners then go to the rooms to take a student with them.
-This action takes a lot of time and can be unfair to some students who wait for a long time in the classroom.
+In a normal situation, students start their tests in a classroom and let the room supervisor know when they are ready to pass their tests. The examiners have to return to the preparation room each time they finish with a student to take a newly available one.
 
-### The solution
-
-I created a tool that allows supervisors to make a list of available students in the room they are and receive a notification when a teacher is ready to take a student.
+Oral-bagrut is a website that makes it possible to manage the queue of students in an efficient way, to streamline the system and make it faster.
 
 ## How does it work?
 
@@ -31,7 +28,7 @@ The Supervisor is someone watching over the classroom during the examination. Wh
 
 ### For the Examinator
 
-The Examinator is the teacher testing the student. As the Supervisor, they enter their name and the room they are testing. When they are ready to test a student, they click on the ```Next Student``` button. If a student is available, the Supervisor sends him immediately to your room. However, if no student is available, a Supervisor will send one when he is ready. When the student finishes his test,  you can click on the ```End test``` button.
+The Examinator is the teacher testing the student. As the Supervisor, they enter their name and the room they are testing. When they are ready to test a student, they click on the ```Next Student``` button. If a student is available, the Supervisor sends him immediately to your room. However, if no student is available, a Supervisor will send one when he is ready.
 
 ---
 
